@@ -5,8 +5,9 @@
   "main": "./bin",
   "type": "module",
   "scripts": {
-    "start": "tsc && node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node .",
+    "build": "tsc"
+
   },
   "author": "Ismail <mail@xvii.dev>",
   "license": "MIT",
