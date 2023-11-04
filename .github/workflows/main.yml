@@ -1,38 +1,58 @@
-name: Build Pages
+
+name: Deploy site to Pages
 
 on:
+
   push:
-    branches:
-      - main
+    branches: ["main"]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4.0.0
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: "18.x"
 
-      - name: Install Dependencies
-        run: npm install --production
 
-      - name: Run Start
+      - name: Install dependencies
+        run: npm install
+
+      - name: Optimize and create icon details
         run: npm run start
 
-      - name: Copy page files
+      - name: Copy public file to out
         run: cp -R public/* out/
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: "./out"
+          path: ./out
 
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-     
