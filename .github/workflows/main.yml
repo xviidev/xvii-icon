@@ -30,12 +30,8 @@ jobs:
         with:
           node-version: "18.x"
 
-
-      - name: Install dependencies
-        run: npm install
-
       - name: Optimize and create icon details
-        run: npm run start
+        run: node .
 
       - name: Copy public file to out
         run: cp -R public/* out/
